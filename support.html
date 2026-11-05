@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EasyRead – Support</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main>
+  <nav><a href="./">EasyRead</a><a href="support.html">Support</a><a href="privacy.html">Privacy</a></nav>
+  <h1>Support</h1>
+  <p>Questions, bug reports or ideas? Check the answers below or send a message — you'll get a reply by email.</p>
+
+  <h2>How do I add a book?</h2>
+  <p>In the library tap <strong>+</strong> (or <strong>Add an ebook</strong>) and pick an EPUB, PDF or TXT file from the Files app (or any connected cloud drive). Free public-domain books are available at <a href="https://www.gutenberg.org">gutenberg.org</a>.</p>
+
+  <h2>My PDF shows no text.</h2>
+  <p>Scanned PDFs contain only images of pages, so there is no text to read. Try an EPUB or a text-based PDF of the same book.</p>
+
+  <h2>How do I change the speed?</h2>
+  <p>In <strong>Settings</strong> you can set your top speed (200–1000 words per minute), your starting speed and how quickly each session ramps up.</p>
+
+  <h2>How do I go back or jump to a different spot?</h2>
+  <p>Tap the word to pause. While paused you see the surrounding text — tap any word to continue from there, or use the buttons to go back to the start of the sentence or skip to the next one.</p>
+
+  <h2>Contact</h2>
+  <form id="contact">
+    <label>Your email <input type="email" name="email" required autocomplete="email"></label>
+    <label>Name (optional) <input type="text" name="name" autocomplete="name" maxlength="100"></label>
+    <label>Device and app version (optional) <input type="text" name="device" placeholder="e.g. iPhone 15, iOS 18.2, EasyRead 1.0.0" maxlength="200"></label>
+    <label>Message <textarea name="message" required maxlength="5000"></textarea></label>
+    <label class="hp" aria-hidden="true">Website <input type="text" name="website" tabindex="-1" autocomplete="off"></label>
+    <button type="submit">Send</button>
+    <p id="status" role="status"></p>
+  </form>
+  <p class="muted">Your email and message are used only to reply to you. See the <a href="privacy.html">privacy policy</a>.</p>
+</main>
+<script>
+  // Google Apps Script web app that forwards the message to the developer's inbox (see apps-script/Code.gs).
+  const ENDPOINT = "APPS_SCRIPT_URL";
+  const form = document.getElementById("contact");
+  const status = document.getElementById("status");
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const button = form.querySelector("button");
+    button.disabled = true;
+    status.textContent = "Sending…";
+    try {
+      // no-cors: Apps Script redirects and sends no CORS headers; the response is opaque but the mail is sent.
+      await fetch(ENDPOINT, { method: "POST", mode: "no-cors", body: new URLSearchParams(new FormData(form)) });
+      form.reset();
+      status.textContent = "Thanks! Your message was sent. We'll reply by email.";
+    } catch {
+      status.textContent = "Couldn't send right now. Please check your connection and try again.";
+    } finally {
+      button.disabled = false;
+    }
+  });
+</script>
+</body>
+</html>
