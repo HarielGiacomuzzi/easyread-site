@@ -37,7 +37,8 @@
   <p class="muted">Your email and message are used only to reply to you. See the <a href="privacy.html">privacy policy</a>.</p>
 </main>
 <script>
-  // Google Apps Script web app that forwards the message to the developer's inbox (see apps-script/Code.gs).
+  // Google Apps Script web app that forwards the message to the developer's inbox. Its source is NOT in this
+  // public repo (gitignored); it lives in the private EasyRead repo, support-form/Code.gs.
   const ENDPOINT = "APPS_SCRIPT_URL";
   const form = document.getElementById("contact");
   const status = document.getElementById("status");

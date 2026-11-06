@@ -1,0 +1,7 @@
+# The support-form backend (Google Apps Script) is deployed from script.google.com and must never
+# be published in this public repo. Keep your working copy in apps-script/ locally; the private
+# EasyRead repo holds the versioned copy (support-form/Code.gs).
+apps-script/
+*.gs
+
+.DS_Store
