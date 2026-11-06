@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>EasyRead – Support</title>
 <link rel="stylesheet" href="style.css">
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </head>
 <body>
 <main>
@@ -31,10 +32,12 @@
     <label>Device and app version (optional) <input type="text" name="device" placeholder="e.g. iPhone 15, iOS 18.2, EasyRead 1.0.0" maxlength="200"></label>
     <label>Message <textarea name="message" required maxlength="5000"></textarea></label>
     <label class="hp" aria-hidden="true">Website <input type="text" name="website" tabindex="-1" autocomplete="off"></label>
+    <!-- Cloudflare Turnstile (public sitekey; the secret is only in the Apps Script's Script Properties) -->
+    <div class="cf-turnstile" data-sitekey="TURNSTILE_SITEKEY" data-theme="dark"></div>
     <button type="submit">Send</button>
     <p id="status" role="status"></p>
   </form>
-  <p class="muted">Your email and message are used only to reply to you. See the <a href="privacy.html">privacy policy</a>.</p>
+  <p class="muted">Your email and message are used only to reply to you. Spam protection by Cloudflare Turnstile. See the <a href="privacy.html">privacy policy</a>.</p>
 </main>
 <script>
   // Google Apps Script web app that forwards the message to the developer's inbox. Its source is NOT in this
@@ -50,6 +53,7 @@
     const messages = {
       ok: "Thanks! Your message was sent. We'll reply by email.",
       invalid: "Please enter a valid email address and a message.",
+      captcha: "Please complete the verification above and try again.",
       rate_limited: "Too many messages right now. Please wait a few minutes and try again.",
       error: "Couldn't send right now. Please try again later."
     };
@@ -62,6 +66,7 @@
     } catch {
       status.textContent = "Couldn't send right now. Please check your connection and try again.";
     } finally {
+      if (window.turnstile) turnstile.reset(); // tokens are single-use
       button.disabled = false;
     }
   });
