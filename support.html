@@ -46,11 +46,18 @@
     const button = form.querySelector("button");
     button.disabled = true;
     status.textContent = "Sending…";
+    const messages = {
+      ok: "Thanks! Your message was sent. We'll reply by email.",
+      invalid: "Please enter a valid email address and a message.",
+      rate_limited: "Too many messages right now. Please wait a few minutes and try again.",
+      error: "Couldn't send right now. Please try again later."
+    };
     try {
-      // no-cors: Apps Script redirects and sends no CORS headers; the response is opaque but the mail is sent.
-      await fetch(ENDPOINT, { method: "POST", mode: "no-cors", body: new URLSearchParams(new FormData(form)) });
-      form.reset();
-      status.textContent = "Thanks! Your message was sent. We'll reply by email.";
+      // Form-encoded POST is a "simple" request; Apps Script's reply allows any origin, so we can read it.
+      const response = await fetch(ENDPOINT, { method: "POST", body: new URLSearchParams(new FormData(form)) });
+      const result = (await response.text()).trim();
+      status.textContent = messages[result] || messages.error;
+      if (result === "ok") form.reset();
     } catch {
       status.textContent = "Couldn't send right now. Please check your connection and try again.";
     } finally {
